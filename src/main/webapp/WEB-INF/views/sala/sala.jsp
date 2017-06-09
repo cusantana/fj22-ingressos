@@ -14,9 +14,9 @@
                 <input type="hidden" name="id" value="${sala.id}">
 
                 <label for="nome">Nome:</label>
-                <input id="nome" type="text" name="nome" class="form-control" value="${sala.nome}">
+                <input id="nome" type="text" name="nome" class="form-control" value="${sala.preco}">
 
-                <c:forEach items="${bindingResult.getFieldErrors('nome')}" var="error">
+                <c:forEach items="${bindingResult.getFieldErrors('preco')}" var="error">
                     <span class="text-danger">${error.defaultMessage}</span>
                 </c:forEach>
 

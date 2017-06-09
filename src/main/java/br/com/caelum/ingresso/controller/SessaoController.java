@@ -1,6 +1,7 @@
 package br.com.caelum.ingresso.controller;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ import br.com.caelum.ingresso.model.Filme;
 import br.com.caelum.ingresso.model.Sala;
 import br.com.caelum.ingresso.model.Sessao;
 import br.com.caelum.ingresso.model.form.SessaoForm;
+import br.com.caelum.ingresso.validacao.GerenciadorDeSessao;
 
 
 
@@ -53,15 +55,25 @@ public class SessaoController {
 	@PostMapping(value = "/sessao")
 	@Transactional
 	public ModelAndView salva(@Valid SessaoForm form, BindingResult result) {
-		if (result.hasErrors()) return form(form.getSalaId(),form);
 		
-		ModelAndView modelAndView = new ModelAndView("redirect:/sala/"+form.getSalaId()+"/sessoes");
+		if (result.hasErrors()) return form(form.getSalaId(),form);
 		
 		Sessao sessao = form.toSessao(salaDao, filmeDao);
 		
-		sessaoDao.save(sessao);
+		List<Sessao> sessoesDaSala = sessaoDao.buscaSessoesDaSala(sessao.getSala());
+				
+		GerenciadorDeSessao gerenciador = new GerenciadorDeSessao(sessoesDaSala);
 		
-		return modelAndView;
+		if (gerenciador.cabe(sessao)) {
+			sessaoDao.save(sessao);
+			return new ModelAndView("redirect:/sala/" + form.getSalaId() + "/sessoes");
+		}
+		
+		return form(form.getSalaId(), form);
 	}
 }
+	
+		
+		//ModelAndView modelAndView = new ModelAndView("redirect:/sala/"+form.getSalaId()+"/sessoes");		
+		//return modelAndView;
 
