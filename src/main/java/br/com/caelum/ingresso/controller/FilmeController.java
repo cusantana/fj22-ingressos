@@ -22,7 +22,13 @@ public class FilmeController {
     @Autowired
     private FilmeDao filmeDao;
 
-
+    @GetMapping("/filme/em-cartaz")
+    public ModelAndView emCartaz() {
+        ModelAndView modelAndView = new ModelAndView("filme/em-cartaz");
+        modelAndView.addObject("filmes", filmeDao.findAll());
+        return modelAndView;
+    }
+    
     @GetMapping({"/filme", "/filme/{id}"})
     public ModelAndView form(@PathVariable("id") Optional<Integer> id, Filme filme){
 
